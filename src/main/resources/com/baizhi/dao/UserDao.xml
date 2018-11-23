@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.baizhi.dao.UserDao">
+	<resultMap type="com.baizhi.entity.User" id="userMap">
+		<id  property="id" column="user_id" />
+		<result property="name" column="user_name"/>
+		<result property="password" column="user_password"/>
+		<result property="cardNo" column="user_card_no"/>
+		<result property="tel" column="user_tel"/>
+		<result property="address" column="user_address"/>
+		<result property="postNumber" column="user_post_number"/>
+		<result property="isAdmin" column="user_is_admin"/>
+		<result property="question" column="user_question"/>
+		<result property="answer" column="user_answer"/>
+	</resultMap>
+    <select id="getOne" resultMap="userMap">
+		select * from auction_user where user_name=#{name} and user_password=#{password}
+	</select>
+
+    <insert id="regiser">
+		insert into auction_user (user_id,user_name,user_password,user_card_no,user_tel,user_address,user_post_number,user_is_admin,user_question,user_answer) values(#{id},#{name},#{password},#{cardNo},#{tel},#{address},#{postNumber},0,'我是谁','我是你爸爸')
+	</insert>
+</mapper>

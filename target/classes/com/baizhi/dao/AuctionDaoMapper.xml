@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+ <!DOCTYPE mapper  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.baizhi.dao.AuctionDao">
+
+	<resultMap type="Auction" id="auctionMap">
+		<id  property="id" column="auction_id" />
+		<result property="name" column="auction_name"/>
+		<result property="startPrice" column="auction_start_price"/>
+		<result property="upset" column="auction_upset"/>
+		<result property="startTime" column="auction_start_time"/>
+		<result property="endTime" column="auction_end_time"/>
+		<result property="pic" column="auction_pic"/>
+		<result property="desc" column="auction_desc"/>
+		<collection property="reList" ofType="Record">
+			<result property="id" column="user_id"/>
+			<result property="auctionTime" column="auction_time"/>
+			<result property="auctionPrice" column="auction_price"/>
+			<association property="user" javaType="User">
+				<result property="name" column="user_name"/>
+			</association>
+		</collection>
+	</resultMap>
+
+	<select id="getAll" resultMap="auctionMap">
+	select * from auction
+	<where>
+		<if test="name!=null and name!=''">
+			auction_name like '%'||#{name}||'%'
+		</if>
+		<if test="desc!=null and desc!=''">
+			and	auction_desc like '%'||#{desc}||'%'
+		</if>
+		<if test="startTime!=null">
+			and auction_start_time <![CDATA[>=]]> #{startTime}
+		</if>
+		<if test="endTime!=null">
+			and auction_end_time <![CDATA[<=]]> #{endTime}
+		</if>
+		<if test="startPrice!=null">
+			and auction_start_price=#{startPrice}
+		</if>
+	</where>
+	</select>
+	
+	<insert id="add">
+		insert into auction (auction_id,auction_name,auction_start_price,auction_upset,auction_start_time,auction_end_time,auction_pic,auction_desc) values(#{id},#{name},#{startPrice},#{upset},#{startTime},#{endTime},#{pic},#{desc})
+	</insert>
+	
+	<delete id="delete">
+		delete from auction where auction_id=#{id}
+	</delete>
+	
+	<update id="update">
+		update auction set auction_name=#{name},auction_start_price=#{startPrice},auction_upset=#{upset},auction_start_time=#{startTime},
+		auction_end_time=#{endTime},auction_pic=#{pic},auction_desc=#{desc} where auction_id=#{id}
+	</update>
+	
+	<select id="getOne" resultMap="auctionMap">
+		select * from auction where  auction_id=#{id}
+	</select>
+	
+	<select id="getRecord" resultMap="auctionMap">
+		select e.*,au.user_name from 
+			(select a.*,ar.user_id,ar.auction_time,auction_price  
+			 from auction a left join auction_record ar
+			on a.auction_id=ar.auction_id
+			where a.auction_id=#{auctionId}) e
+			left join auction_user au
+			on e.user_id=au.user_id
+			order by e.auction_price desc
+	</select>
+
+
+</mapper>

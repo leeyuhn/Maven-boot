@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+ <!DOCTYPE mapper  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.baizhi.dao.RecordDao">
+
+	<select id="getRecords" resultType="RecordDTO">
+		select r.auction_time time,r.auction_price price,u.user_name username
+			from auction_record r,auction_user u 
+			where r.user_id=u.user_id  and r.auction_id=#{auctionId}
+			order by r.auction_price DESC
+	</select>
+	<insert id="add">
+		insert into auction_record (user_id,auction_id,auction_time,auction_price) values(#{userId},#{auctionId},sysdate(),#{auctionPrice})
+	</insert>
+</mapper>
